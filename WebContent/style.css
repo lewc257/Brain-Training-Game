@@ -1,0 +1,38 @@
+body {
+	font-family: arial;
+	font-size: 23px;
+	background-color: orange;
+}
+
+.container {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 100px;
+	margin-bottom: auto;
+	width: 35%;
+	padding: 5px;
+	border-radius: 5px;
+}
+
+.form-control {
+	padding: 10px;
+	border-width: 2px;
+	border-color: tomato;
+	border-style: solid;
+	border-radius: 5px;
+	background-color: yellow;
+}
+
+input[type="text"], input[type="number"] {
+	font-size: 20px;
+	text-align: center;
+	border-radius: 5px;
+	border-width: 2px;
+	border-style: solid;
+	border-color: darkgrey;
+}
+
+header {
+	background-color: yellow;
+	text-align: center;
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<title>Brain Training Game</title>
+<link rel="stylesheet" type="text/css" href="menu.css"></link>
+<link rel="stylesheet" type="text/css" href="style.css"></link>
+<style>
+.form-control .player-details {
+	padding: 2px;
+	margin: 7px;
+	text-align: center;
+}
+
+.form-control .player-details label {
+	display: block;
+	padding-bottom: 10px;
+}
+
+.form-control .radio-options {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	width: 35%
+}
+
+.form-control .radio-options input[type="radio"] {
+	float: right;
+	margin-top: 10px;
+}
+
+.radio-option {
+	transition: 0.3s;
+	display: block;
+	margin: 10px;
+}
+
+.radio-option:hover {
+	background-color: tomato;
+	border-radius: 3px;
+}
+
+.button-area {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5px;
+	width: 20%;
+}
+
+.button-area input[type="submit"] {
+	margin: auto;
+	width: 100%;
+	font-size: 20px;
+}
+</style>
+</head>
+<body>
+	<header>
+		<h2>Brain Training Game</h2>
+	</header>
+	<div class="container">
+		<form id="form" class="form-control">
+			<div class="player-details">
+				<label><b>Enter your name:</b></label> <input id="player-name"
+					name="player" type="text" required />
+			</div>
+			<div class="radio-options">
+				<div style="text-align: center">
+					<b>Difficulty:</b>
+				</div>
+				<div class="radio-option">
+					<label>Easy</label> <input value="easy" type="radio"
+						name="difficulty">
+				</div>
+				<div class="radio-option">
+					<label>Medium</label> <input value="medium" type="radio"
+						name="difficulty">
+				</div>
+				<div class="radio-option">
+					<label>Hard</label> <input value="hard" type="radio"
+						name="difficulty">
+				</div>
+			</div>
+			<div class="button-area">
+				<input type="submit" value="start" />
+			</div>
+		</form>
+	</div>
+</body>
+<script type="text/javascript">
+	/*
+		TODO: Increase the time according to difficulty
+		TODO: Apply bodmas
+		TODO: Allow users to download their data
+		TODO: Persist users records (no need for name)
+		TODO: Explanation, Sample Questions etc.
+	*/
+	document.onclick = function(e){
+		document.getElementById("player-name").focus();
+	}
+	form.onsubmit = function() {
+		var form = document.getElementById("form");
+		if (localStorage) {
+			var difficulty = GetRadio(form.difficulty);
+			if (!difficulty) {
+				alert("Please select a difficulty");
+			} else {
+				var name = form.player.value;
+				localStorage.setItem("player", name);
+				localStorage.setItem("difficulty", difficulty);
+				form.action = "questions.html";
+			}
+		} else {
+			alert("Error: You don't have local storage!");
+		}
+	}
+
+	var options = document.querySelectorAll(".radio-option");
+	for (var i = 0; i < options.length; i++) {
+		options[i].addEventListener('click', function() {
+			this.children[1].checked = true;
+		});
+	}
+
+	function GetRadio(name) {
+		for (var i = 0; i < name.length; i++) {
+			if (name[i].checked) {
+				return name[i].value;
+			}
+		}
+		return "";
+	}
+</script>
+</html>

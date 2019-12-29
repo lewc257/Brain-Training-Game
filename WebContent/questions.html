@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="style.css"></link>
+<style>
+#time {
+	display: block;
+	margin-bottom: 60px;
+	text-align: center;
+}
+
+.question-box {
+	margin: auto;
+	margin-right: auto;
+	margin-top: 10%;
+	margin-bottom: 20%;
+	width: 60%;
+}
+
+.question-box #question, #question-num {
+	display: block;
+	margin-bottom: 50px;
+	text-align: center;
+}
+
+.question-box input[type="number"] {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.button-box {
+	margin-left:auto;
+	margin-right:auto;
+	margin-top: 10%;
+	width:45%;
+}
+
+.button-box input[type="button"]{
+	font-size: 20px;
+	box-sizing: border_box;
+	width:100%;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<label id="time"></label>
+		<div class="question-box">
+			<label id="question-num"></label>
+			<label id="question"></label> 
+			<input id="player-answer" type="number" name="answer" />
+			<div class="button-box">
+				<input id="submit" type="button" value="submit">
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="constants.js"></script>
+	<script type="text/javascript" src="classes.js"></script>
+	<script type="text/javascript">
+		var name = localStorage.getItem("player");
+		var difficulty = localStorage.getItem("difficulty");
+
+		if (!name || !difficulty) {
+			window.location.href = "index.html";
+		}
+		
+		var container = document.querySelector(".container");
+		container.style.background = 'yellow';
+		container.style.border = '2px solid tomato';
+
+		var expressionLength;
+		switch (difficulty) {
+		case "easy":
+			expressionLength = 2;
+			break;
+		case "medium":
+			expressionLength = 3;
+			break;
+		case "hard":
+			expressionLength = 5;
+			break;
+		}
+
+		alert(`Name: ${name}, Difficulty: ${difficulty}`);
+		alert("Get Ready.")
+
+		var time = document.getElementById("time");
+		var question_number = document.getElementById("question-num");
+		var question = document.getElementById("question");
+		var submit = document.getElementById("submit");
+		var user_input = document.getElementById("player-answer");
+
+		user_input.focus();
+
+		document.onclick = function(e) {
+			user_input.focus();
+		}
+
+		submit.onclick = proceed;
+		user_input.onkeypress = function(e) {
+			if (e.key == "Enter") {
+				proceed();
+			}
+		};
+
+		var generator = new RandomMathExpressionGenerator();
+		var x;
+		var question_num = 1;
+		var counter = TIME_LIMIT;
+		var correct = 0;
+		var points = 0;
+		var results = {};
+
+		function resetTimerAndLabel() {
+			if (x != undefined) {
+				clearInterval(x);
+			}
+			counter = TIME_LIMIT;
+			time.innerHTML = timeFormatHtml(counter);
+		}
+
+		function startTimer() {
+			x = setInterval(elapsed, 1000);
+		}
+
+		function elapsed() {
+			counter--;
+			if (counter == -1) {
+				proceed();
+			} else {
+				time.innerHTML = timeFormatHtml(counter);
+				if (counter <= 5) {
+					time.style.color = 'red';
+				}
+			}
+		}
+
+		function proceed() {
+			if (question_num <= MAX_QUESTIONS) {
+				submitAction();
+				displayNextExpression();
+				user_input.value = '';
+				time.style.color = '';
+				resetTimerAndLabel();
+				startTimer();
+			} else {
+				submitAction();
+				clearInterval(x);
+				var id = 0;
+				for (var key in results) {
+					localStorage.setItem(id++, results[key]);
+				}
+				localStorage.setItem("correct", correct);
+				localStorage.setItem("points", points);
+
+				window.location.href = 'results.html';
+			}
+		}
+
+		function submitAction(e) {
+			var item = {
+					expr: expression.expr, 
+					answer: expression.answer, 
+					input: user_input.value,
+					answered: TIME_LIMIT - counter
+			};
+			results[question_num] = JSON.stringify(item);
+		}
+
+		var expression;
+		function displayNextExpression() {
+			expression = generator
+					.generateExprssionWithAnswer(expressionLength);
+			question_number.innerHTML = '<b>Question ' + question_num + '</b>';
+			question.innerHTML = '<b>' + expression.expr + ' = ?</b>';
+			question_num++;
+		}
+
+		function timeFormatHtml(counter) {
+			return `<b>Time: ${counter} seconds</b>`;
+		}
+
+		displayNextExpression()
+		resetTimerAndLabel();
+		startTimer();
+	</script>
+</body>
+</html>

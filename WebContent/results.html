@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="style.css"></link>
+		<style>
+			td {
+				padding-left: 20px;
+				padding-bottom: 7px;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h2>Results</h2>
+		</header>
+		<table id="results">
+		
+		</table>
+		<script type="text/javascript" src="constants.js"></script>
+		<script type="text/javascript">
+			var body = document.body;
+			var table = document.getElementById("results");
+			
+			var name = localStorage.getItem("player");
+			var difficulty = localStorage.getItem("difficulty");
+			
+			appendRow(`Name: ${name}`);
+			appendRow(`Difficulty: ${difficulty.toUpperCase()}`);
+			appendRow('');
+			
+			var correct = 0;
+			for (var  i = 0; i < localStorage.length - 4; i++){
+				var item = JSON.parse(localStorage.getItem(i));
+				tds = [
+					 "Question " + (i + 1) + ": " + item.expr,
+					 "Real Answer: " + item.answer,
+					 "Your Answer:" + item.input,
+					 "Answered within: " + item.answered + " seconds"
+				];
+				if (item.input != item.answer){
+					append(tds, 'Red');
+				} else {
+					append(tds, 'Green');
+					correct++;
+				}
+			}
+			table.children[2].innerHTML = `<td>Correct: ${correct} / ${MAX_QUESTIONS}</td>`;
+			
+			localStorage.clear();
+			
+			function append(tds, color){
+				var tr = document.createElement("tr");
+				for (tdVal of tds){
+					var td = document.createElement('td');
+					var textNode = document.createTextNode(tdVal);
+					td.appendChild(textNode);
+					tr.appendChild(td);
+				}
+				if (color != undefined || color != null){
+					tr.style.color = color;
+				}
+				table.appendChild(tr);
+			}
+			
+			function appendRow(textValue, color){
+				var tr = document.createElement("tr");
+				var td = document.createElement("td");
+				td.appendChild(document.createTextNode(textValue));
+				tr.appendChild(td);
+				if (color != undefined || color != null){
+					tr.style.color = color;
+				}
+				table.appendChild(tr);
+			}
+		</script>
+	</body>
+</html>

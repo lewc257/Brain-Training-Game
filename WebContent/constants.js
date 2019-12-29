@@ -1,0 +1,2 @@
+const MAX_QUESTIONS = 10;
+const TIME_LIMIT = 19;
